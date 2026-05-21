@@ -103,7 +103,7 @@ Export your generated dataset:
 Downloaded files are packaged in a ZIP archive with:
 - One data file per selected table
 - Optional codelist file
-- All column names include `_LIDS` suffix to clearly identify the impossible data
+- All variable names are written in lower case with an upper-case `_LIDS` suffix (e.g. `var1_LIDS`) to clearly identify the impossible data (table and file names are unchanged)
 
 ## Additional notes
 
@@ -119,6 +119,12 @@ When generating data from multiple tables, `CORENO` (the core record number) is:
 - Automatically included if present in selected tables
 - Assigned unique sequential values
 - Consistent across all tables (enabling joins)
+
+### Multi-entry tables
+
+Most tables contain exactly one row per `CORENO`. A number of tables, however, can legitimately hold **several records per LS member** — for example the non-LS-member census tables (`NM71`–`NM21`) or event registrations such as cancers (`CANC`) and births (`LBSM`, `SBSM`, `LBSF`, `SBSF`). For these tables LIDS generates a **random number of rows per `CORENO` (1–5)**, with every `CORENO` appearing at least once, up to a per-table ceiling of **600,000 rows**. Every `CORENO` value is still shared across tables, so the generated tables remain linkable.
+
+The full list of multi-entry tables is: `NM71`, `NM81`, `NM91`, `NM01`, `NM11`, `NM21`, `EMBR`, `CANC`, `LBSM`, `SBSM`, `IDMI`, `WDOW`, `ENLS`, `REEN`, `LBSF`, `SBSF`.
 
 ## Notifications
 
