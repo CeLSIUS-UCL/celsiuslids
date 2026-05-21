@@ -5,7 +5,10 @@
 library(shiny)
 library(shinydashboard)
 library(DT)
-library(tidyverse)
+library(dplyr)
+library(tidyr)
+library(purrr)
+library(tibble)
 library(haven)
 library(zip)
 library(shinyWidgets)
@@ -159,6 +162,78 @@ write_data_file <- function(df, filepath, ext) {
 }
 
 # ============================================================================
+# HELPER: Output column/variable name — lowercase the variable name while
+#         keeping the capitalised "_LIDS" suffix (e.g. "VAR1" -> "var1_LIDS")
+# ============================================================================
+
+make_lids_name <- function(x) paste0(tolower(x), "_LIDS")
+
+# ============================================================================
+# MULTI-ENTRY TABLES
+# A few ONS LS tables can legitimately hold more than one record per LS member
+# (e.g. several non-LS household members, or repeated event registrations such
+# as cancers or births). For these tables LIDS generates a random number of
+# rows per CORENO (1..MAX), with every CORENO keeping at least one row, capped
+# at an overall per-table row ceiling. Every other table keeps exactly one row
+# per CORENO, exactly as before.
+# ============================================================================
+
+MULTI_ENTRY_TABLES <- c("NM71", "NM81", "NM91", "NM01", "NM11", "NM21",
+                        "EMBR", "CANC", "LBSM", "SBSM", "IDMI", "WDOW",
+                        "ENLS", "REEN", "LBSF", "SBSF")
+MULTI_ENTRY_MAX_PER_CORENO <- 5L
+MULTI_ENTRY_ROW_CEILING    <- 600000L
+
+# Rebuild one table so each CORENO has a random number of rows in
+# 1..max_per_coreno, capped so the table holds at most row_ceiling rows.
+# `corenos` is the canonical one-row-per-member identifier vector (shared across
+# tables, so linkage is preserved); `varcols` are the table's selected
+# variables. Values for every row are drawn independently from each variable's
+# code list, exactly as in the base single-row draw, so each generated record
+# stays an independent "impossible" event.
+build_multi_entry_table <- function(corenos, varcols, tbl, loaded, fmt,
+                                    include_all    = FALSE,
+                                    max_per_coreno = MULTI_ENTRY_MAX_PER_CORENO,
+                                    row_ceiling    = MULTI_ENTRY_ROW_CEILING) {
+  ncoreno <- length(corenos)
+  if (ncoreno == 0L) {
+    out <- data.frame(CORENO = numeric(0), stringsAsFactors = FALSE, check.names = FALSE)
+    for (vn in varcols) out[[vn]] <- character(0)
+    return(out)
+  }
+
+  # Each CORENO gets a base row plus 0..(max-1) random extra rows.
+  extras <- sample.int(max_per_coreno, ncoreno, replace = TRUE) - 1L
+  budget <- row_ceiling - ncoreno                       # extra rows the ceiling allows
+  if (budget < 0L) {
+    extras[] <- 0L                                       # base rows alone already fill the ceiling
+  } else if (sum(extras) > budget) {
+    # Randomly drop extra rows down to the budget; each CORENO stays within 0..(max-1).
+    slot   <- rep.int(seq_len(ncoreno), extras)
+    keep   <- sample.int(length(slot), budget)
+    extras <- tabulate(slot[keep], nbins = ncoreno)
+  }
+  counts <- 1L + extras
+  total  <- sum(counts)
+
+  out <- data.frame(CORENO = as.numeric(rep.int(corenos, counts)),
+                    stringsAsFactors = FALSE, check.names = FALSE)
+  for (vn in varcols) {
+    key <- paste0(tbl, "::", vn)
+    vt  <- loaded[[key]]
+    if (is.null(vt) || nrow(vt) == 0) {
+      out[[vn]] <- rep(NA, total)
+    } else {
+      vals         <- unique(vt$value)
+      is_range_var <- all(vt$is_range)
+      replace_flag <- is_range_var || !(include_all && length(vals) >= total)
+      out[[vn]]    <- apply_format_type(sample(vals, total, replace = replace_flag), fmt[[key]])
+    }
+  }
+  out
+}
+
+# ============================================================================
 # PRE-COMPUTE TABLE CHOICES
 # ============================================================================
 
@@ -183,8 +258,8 @@ ui <- dashboardPage(
     dropdownMenuOutput("custom_notification_menu"),
     tags$li(
       class = "dropdown",
-      tags$a(href = "https://www.ucl.ac.uk/population-health-sciences/epidemiology-health-care/research/ucl-research-department-epidemiology-public-health/research/health-and-social-surveys-research-group/studies/celsius",
-             target = "_blank", title = "CeLSIUS website",
+      tags$a(href = "https://www.ucl.ac.uk/population-health-sciences/epidemiology-health-care/research/ucl-research-department-epidemiology-public-health/research/health-and-social-surveys-research-group/studies/celsius/longitudinal-impossible-dataset",
+             target = "_blank", title = "Longitudinal Impossible Dataset (LIDS) information",
              style = "padding: 13px 14px;", icon("info-circle"))
     ),
     tags$li(
@@ -942,7 +1017,16 @@ server <- function(input, output, session) {
                      sel_tab <- c(sel_tab, coreno_needed$tablename)
                      notify("Warning: CORENO was automatically added for table linkage.", "warning")
                    }
-                   
+
+                   # Heads-up: selected tables that can hold several records per CORENO
+                   multi_selected <- intersect(unique(sel_tab), MULTI_ENTRY_TABLES)
+                   if (length(multi_selected) > 0) {
+                     tbls <- if (length(multi_selected) > 3)
+                       paste0(paste(multi_selected[1:3], collapse = ", "), " +", length(multi_selected) - 3, " more")
+                     else paste(multi_selected, collapse = ", ")
+                     notify(paste0("Warning: ", tbls, " may contain multiple records per CORENO."), "warning")
+                   }
+
                    incProgress(0.2, detail = "Loading code values and format metadata...")
                    
                    selections <- tibble(tablename = sel_tab, varname = sel)
@@ -988,7 +1072,15 @@ server <- function(input, output, session) {
                      }
                      notify(msg, "warning")
                    }
-                   
+
+                   # Heads-up: at this sample size the per-table row ceiling can be reached
+                   if (length(multi_selected) > 0 &&
+                       validated_n * MULTI_ENTRY_MAX_PER_CORENO >= MULTI_ENTRY_ROW_CEILING) {
+                     notify(paste0("Warning: Multi-record tables may be capped at ",
+                                   format(MULTI_ENTRY_ROW_CEILING, big.mark = ",", scientific = FALSE),
+                                   " rows at this sample size."), "warning")
+                   }
+
                    incProgress(0.4, detail = "Sampling values...")
                    
                    gen$n_obs           <- validated_n
@@ -1046,7 +1138,27 @@ server <- function(input, output, session) {
   
   partitioned_data <- reactive({
     req(impossible_data())
-    partition_by_table(impossible_data(), attr(impossible_data(), "table_map"))
+    parts <- partition_by_table(impossible_data(), attr(impossible_data(), "table_map"))
+
+    # Rebuild multi-entry tables with several rows per CORENO; all others are
+    # left exactly as produced by the base draw above.
+    multi <- intersect(names(parts), MULTI_ENTRY_TABLES)
+    if (length(multi) > 0) {
+      if (!is.na(gen$validated_seed)) set.seed(gen$validated_seed)
+      for (tbl in multi) {
+        df <- parts[[tbl]]
+        if (!"CORENO" %in% names(df)) next            # no linkage key: leave unchanged
+        parts[[tbl]] <- build_multi_entry_table(
+          corenos     = df$CORENO,
+          varcols     = setdiff(names(df), "CORENO"),
+          tbl         = tbl,
+          loaded      = loaded_values$data,
+          fmt         = format_meta$data,
+          include_all = gen$include_all
+        )
+      }
+    }
+    parts
   })
   
   # ==========================================================================
@@ -1063,25 +1175,27 @@ server <- function(input, output, session) {
   })
   
   partitioned_data_labels <- reactive({
-    req(impossible_data(), length(loaded_values$data) > 0)
-    data    <- impossible_data()
-    tbl_map <- attr(data, "table_map")
+    req(length(loaded_values$data) > 0)
+    parts   <- partitioned_data()        # same (already multi-entry-expanded) data
     lookups <- label_lookups()
-    labelled <- data
-    
-    for (i in seq_along(names(labelled))) {
-      col <- names(labelled)[i]
-      if (col == "CORENO") next
-      key    <- paste0(tbl_map$tablename[tbl_map$colname == col][1], "::", col)
-      lookup <- lookups[[key]]
-      if (is.null(lookup) || length(lookup) == 0) next
-      
-      col_chr <- as.character(labelled[[col]])
-      idx     <- match(col_chr, names(lookup))
-      labelled[[col]] <- ifelse(!is.na(idx), lookup[idx], col_chr)
-      labelled[[col]][is.na(data[[col]])] <- NA
-    }
-    partition_by_table(labelled, tbl_map)
+
+    labelled <- map(names(parts), function(tbl) {
+      df <- parts[[tbl]]
+      for (col in names(df)) {
+        if (col == "CORENO") next
+        key    <- paste0(tbl, "::", col)
+        lookup <- lookups[[key]]
+        if (is.null(lookup) || length(lookup) == 0) next
+
+        orig    <- df[[col]]
+        col_chr <- as.character(orig)
+        idx     <- match(col_chr, names(lookup))
+        df[[col]] <- ifelse(!is.na(idx), lookup[idx], col_chr)
+        df[[col]][is.na(orig)] <- NA
+      }
+      df
+    })
+    setNames(labelled, names(parts))
   })
   
   # ==========================================================================
@@ -1119,14 +1233,14 @@ server <- function(input, output, session) {
   observe({
     if (is.null(gen$vars)) return()
     data_list <- if (show_labels()) partitioned_data_labels() else partitioned_data()
-    
-    n_rows <- nrow(data_list[[1]])
+
     set.seed(42)
-    idx <- if (n_rows > 100) sort(sample.int(n_rows, 100)) else seq_len(n_rows)
-    
     walk(names(data_list), function(nm) {
       local({
-        df <- data_list[[nm]][idx, , drop = FALSE]
+        df_full <- data_list[[nm]]
+        n_rows  <- nrow(df_full)
+        idx     <- if (n_rows > 100) sort(sample.int(n_rows, 100)) else seq_len(n_rows)
+        df      <- df_full[idx, , drop = FALSE]
         output[[paste0("table_", nm)]] <- renderDT(
           datatable(df, options = list(pageLength = 25, scrollX = TRUE, autoWidth = FALSE,
                                        deferRender = TRUE, scroller = TRUE, dom = "ftp",
@@ -1175,7 +1289,7 @@ server <- function(input, output, session) {
         files <- map_chr(names(data_parts), function(nm) {
           df <- data_parts[[nm]]
           stopifnot(!is.null(df), nrow(df) > 0)
-          colnames(df) <- paste0(colnames(df), "_LIDS")
+          colnames(df) <- make_lids_name(colnames(df))
           write_data_file(df, file.path(tmp_dir, paste0(nm, "_LIDS.", ext)), ext)
         })
         
@@ -1194,7 +1308,7 @@ server <- function(input, output, session) {
             
             vl %>% transmute(
               tablename_LIDS = paste0(parts[1], "_LIDS"),
-              varname_LIDS   = paste0(parts[2], "_LIDS"),
+              varname_LIDS   = make_lids_name(parts[2]),
               format = fmt, value, label
             )
           })

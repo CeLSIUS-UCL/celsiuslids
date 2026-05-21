@@ -1,6 +1,6 @@
 Package: celsiuslids
 Title: CeLSIUS Longitudinal Impossible Dataset (LIDS) Generator
-Version: 1.0.0
+Version: 1.1.0
 Authors@R: 
     person("CeLSIUS", email = "celsius@ucl.ac.uk", role = c("aut", "cre"))
 Description: An R package containing a Shiny application that can be used to generate impossible datasets resembling data extracts from the ONS Longitudinal Study.
@@ -15,6 +15,7 @@ Imports:
     dplyr,
     tidyr,
     purrr,
+    tibble,
     haven,
     zip,
     shinyWidgets,
@@ -22,6 +23,3 @@ Imports:
     DBI,
     RSQLite,
     digest
-Suggests:
-    testthat (>= 3.0.0)
-Config/testthat/edition: 3

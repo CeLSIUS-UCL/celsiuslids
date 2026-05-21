@@ -1,0 +1,13 @@
+# R / RStudio
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+
+# macOS
+.DS_Store
+
+# Transient SQLite artifacts created when the app is run locally
+*.db-wal
+*.db-shm
+*.db-journal
