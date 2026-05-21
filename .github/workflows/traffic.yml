@@ -1,0 +1,61 @@
+name: Archive traffic stats
+
+# Snapshots the GitHub Traffic API (a rolling 14-day window) into the
+# `traffic-data` branch so repository usage history accumulates long-term.
+#
+# Requires a repository secret named TRAFFIC_TOKEN: a personal access token that
+# can read repository traffic. The built-in GITHUB_TOKEN cannot access the
+# traffic endpoints, which is why a PAT is needed.
+#
+# Self-contained: uses only gh, jq, awk and git (all preinstalled on the runner)
+# - no third-party actions. Nothing here runs in, or affects, the app.
+
+on:
+  schedule:
+    - cron: "17 4 * * 1"   # Mondays 04:17 UTC
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  archive:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Snapshot traffic into the traffic-data branch
+        env:
+          GH_TOKEN: ${{ secrets.TRAFFIC_TOKEN }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          if [ -z "${GH_TOKEN:-}" ]; then
+            echo "TRAFFIC_TOKEN secret not set; nothing to do."
+            exit 0
+          fi
+
+          # Check out only the data branch, authenticated for push-back.
+          git clone -q --branch traffic-data --single-branch \
+            "https://x-access-token:${GH_TOKEN}@github.com/${REPO}.git" data
+
+          # Append the latest snapshot to the running history (dedup by date).
+          merge() {  # $1=api path  $2=json key  $3=csv filename
+            gh api "repos/${REPO}/traffic/$1" \
+              --jq ".$2[] | [.timestamp,(.count|tostring),(.uniques|tostring)] | join(\",\")" > new.csv
+            { tail -n +2 "data/$3" 2>/dev/null || true; cat new.csv; } \
+              | awk -F, 'NF>=3 {row[$1]=$0} END {for (k in row) print row[k]}' \
+              | sort > body.csv
+            { echo "timestamp,count,uniques"; cat body.csv; } > "data/$3"
+          }
+          merge clones clones clones.csv
+          merge views  views  views.csv
+
+          cd data
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add clones.csv views.csv
+          if git diff --staged --quiet; then
+            echo "No new traffic data to record."
+          else
+            git commit -m "Update traffic stats ($(date -u +%F))"
+            git push origin traffic-data
+          fi
