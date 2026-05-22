@@ -138,6 +138,10 @@ The application provides feedback through:
 
 If you use LIDS, please cite it via its DOI: https://doi.org/10.5281/zenodo.20344702 (this concept DOI always resolves to the latest version; cite a specific version's DOI for reproducibility). GitHub's "Cite this repository" button generates a full citation from `CITATION.cff`.
 
+## Data source
+
+The table, variable, and code-list metadata bundled with LIDS is derived from the public CeLSIUS data dictionary for the ONS Longitudinal Study, which is © Crown Copyright and made available under the [Open Government Licence v3.0](https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/). LIDS contains no real ONS LS data.
+
 ## Funding
 
 This project was funded by the Economic and Social Research Council (ESRC) as part of the [Census Innovation at CeLSIUS](https://gtr.ukri.org/projects?ref=ES%2FZ502741%2F1) grant (ES/Z502741/1).
