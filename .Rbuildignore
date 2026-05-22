@@ -1,3 +1,4 @@
 ^\.zenodo\.json$
 ^\.gitignore$
 ^\.Rbuildignore$
+^\.github$
