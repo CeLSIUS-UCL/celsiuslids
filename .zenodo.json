@@ -60,7 +60,7 @@
       "relation": "isDocumentedBy",
       "scheme": "doi",
       "identifier": "10.23889/ijpds.v10i4.3187",
-      "resource_type": "publication-article"
+      "resource_type": "publication-conferencepaper"
     },
     {
       "relation": "isDocumentedBy",
