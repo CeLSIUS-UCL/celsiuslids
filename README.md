@@ -1,6 +1,6 @@
 # celsiuslids 
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20344702.svg)](https://doi.org/10.5281/zenodo.20344702)
+[![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.20344702-blue)](https://doi.org/10.5281/zenodo.20344702) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 This R package can be used to run the CeLSIUS Longitudinal Impossible Dataset (LIDS) application locally. The application can be used to generate impossible datasets resembling data extracts from the ONS Longitudinal Study (ONS LS).
 
