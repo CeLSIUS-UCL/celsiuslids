@@ -4,6 +4,8 @@
 
 This R package can be used to run the CeLSIUS Longitudinal Impossible Dataset (LIDS) application locally. The application can be used to generate impossible datasets resembling data extracts from the ONS Longitudinal Study (ONS LS).
 
+![Screenshot of the LIDS application interface](man/figures/lids_screenshot.png)
+
 ## Installation
 
 You can install the package from GitHub:
