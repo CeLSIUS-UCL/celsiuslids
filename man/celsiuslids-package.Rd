@@ -4,10 +4,9 @@
 \name{celsiuslids-package}
 \alias{celsiuslids}
 \alias{celsiuslids-package}
-\title{celsiuslids: CeLSIUS Longitudinal Impossible Dataset Generator}
+\title{celsiuslids: CeLSIUS Longitudinal Impossible Dataset (LIDS) Generator}
 \description{
-An R package containing a Shiny application that can be used to generate
-'impossible' datasets resembling data extracts from the ONS Longitudinal Study.
+An R package containing a Shiny application that can be used to generate impossible datasets resembling data extracts from the ONS Longitudinal Study.
 }
 \section{Main function}{
 
@@ -15,6 +14,24 @@ An R package containing a Shiny application that can be used to generate
 }
 
 \author{
-\strong{Maintainer}: CeLSIUS \email{celsius@ucl.ac.uk}
+\strong{Maintainer}: Andreas Mastrosavvas \email{celsius@ucl.ac.uk} (\href{https://orcid.org/0000-0002-1354-5523}{ORCID})
+
+Authors:
+\itemize{
+  \item Nicola Shelton (\href{https://orcid.org/0000-0002-4939-1036}{ORCID})
+  \item Jitka Pikhartova (\href{https://orcid.org/0000-0003-3389-0946}{ORCID})
+  \item Alison Sizer (\href{https://orcid.org/0000-0002-3448-5742}{ORCID})
+  \item Jemima Stockton (\href{https://orcid.org/0000-0003-2509-2848}{ORCID})
+  \item Oliver Duke-Williams (\href{https://orcid.org/0000-0001-8050-1881}{ORCID})
+  \item Vasileios Routsis (\href{https://orcid.org/0000-0001-8275-4284}{ORCID})
+  \item Bonnie Boyana Buyuklieva
+  \item Adam Dennett (\href{https://orcid.org/0000-0001-8036-0185}{ORCID})
+}
+
+Other contributors:
+\itemize{
+  \item Economic and Social Research Council (\href{https://ror.org/03n0ht308}{ROR}) (ES/Z502741/1) [funder]
+  \item University College London [copyright holder]
+}
 
 }

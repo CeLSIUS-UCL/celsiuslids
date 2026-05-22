@@ -1,5 +1,7 @@
 #' Run the CeLSIUS LIDS Generator Application
 #'
+#' Launches the Shiny application for generating impossible datasets based on
+#' CeLSIUS variable codelists.
 #'
 #' @param port The TCP port that the application should listen on. If the port
 #'   is not specified, a random port will be chosen.

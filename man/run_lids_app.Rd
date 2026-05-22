@@ -19,7 +19,8 @@ in the system's default web browser.}
 This function does not return a value; it launches the Shiny app.
 }
 \description{
-Launches the Shiny application for generating impossible datasets based on CeLSIUS variable codelists.
+Launches the Shiny application for generating impossible datasets based on
+CeLSIUS variable codelists.
 }
 \examples{
 \dontrun{
