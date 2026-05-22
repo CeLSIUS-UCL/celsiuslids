@@ -3,3 +3,4 @@
 ^\.Rbuildignore$
 ^\.github$
 ^LICENSE\.md$
+^CITATION\.cff$
