@@ -61,6 +61,16 @@
       "scheme": "doi",
       "identifier": "10.23889/ijpds.v10i4.3187",
       "resource_type": "publication-article"
+    },
+    {
+      "relation": "isDocumentedBy",
+      "scheme": "url",
+      "identifier": "https://www.ucl.ac.uk/population-health-sciences/epidemiology-health-care/research/ucl-research-department-epidemiology-public-health/research/health-and-social-surveys-research-group/studies/celsius/longitudinal-impossible-dataset"
+    },
+    {
+      "relation": "isReferencedBy",
+      "scheme": "url",
+      "identifier": "https://blog.ukdataservice.ac.uk/longitudinal-impossible-dataset/"
     }
   ],
   "keywords": [
