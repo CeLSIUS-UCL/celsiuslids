@@ -14,8 +14,6 @@ An R package containing a Shiny application that can be used to generate
 \code{\link{run_lids_app}} - Launch the LIDS Generator application
 }
 
-
-}
 \author{
 \strong{Maintainer}: CeLSIUS \email{celsius@ucl.ac.uk}
 
