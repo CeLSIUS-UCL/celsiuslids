@@ -138,6 +138,10 @@ The application provides feedback through:
 
 If you use LIDS, please cite it via its DOI: https://doi.org/10.5281/zenodo.20344702 (this concept DOI always resolves to the latest version; cite a specific version's DOI for reproducibility). GitHub's "Cite this repository" button generates a full citation from `CITATION.cff`.
 
+## Funding
+
+This project was funded by the Economic and Social Research Council (ESRC) as part of the [Census Innovation at CeLSIUS](https://gtr.ukri.org/projects?ref=ES%2FZ502741%2F1) grant (ES/Z502741/1).
+
 ## Contact
 
 For questions, support or feedback please contact CeLSIUS at [celsius@ucl.ac.uk](mailto:celsius@ucl.ac.uk).
