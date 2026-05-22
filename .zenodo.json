@@ -1,0 +1,73 @@
+{
+  "title": "celsiuslids: CeLSIUS Longitudinal Impossible Dataset (LIDS) Generator",
+  "upload_type": "software",
+  "license": "MIT",
+  "description": "An R package and Shiny application that generates 'impossible' synthetic datasets resembling extracts from the ONS Longitudinal Study, built from public CeLSIUS data-dictionary metadata. Run it locally via the R package or use the hosted app at https://celsius.shinyapps.io/lids/.",
+  "creators": [
+    {
+      "name": "Mastrosavvas, Andreas",
+      "affiliation": "University College London",
+      "orcid": "0000-0002-1354-5523"
+    },
+    {
+      "name": "Shelton, Nicola",
+      "affiliation": "University College London",
+      "orcid": "0000-0002-4939-1036"
+    },
+    {
+      "name": "Pikhartova, Jitka",
+      "affiliation": "University College London",
+      "orcid": "0000-0003-3389-0946"
+    },
+    {
+      "name": "Sizer, Alison",
+      "affiliation": "University College London",
+      "orcid": "0000-0002-3448-5742"
+    },
+    {
+      "name": "Stockton, Jemima",
+      "affiliation": "University College London",
+      "orcid": "0000-0003-2509-2848"
+    },
+    {
+      "name": "Duke-Williams, Oliver",
+      "affiliation": "University College London",
+      "orcid": "0000-0001-8050-1881"
+    },
+    {
+      "name": "Routsis, Vasileios",
+      "affiliation": "University College London",
+      "orcid": "0000-0001-8275-4284"
+    },
+    {
+      "name": "Buyuklieva, Bonnie Boyana",
+      "affiliation": "University College London"
+    },
+    {
+      "name": "Dennett, Adam",
+      "affiliation": "University College London",
+      "orcid": "0000-0001-8036-0185"
+    }
+  ],
+  "related_identifiers": [
+    {
+      "relation": "isDocumentedBy",
+      "scheme": "doi",
+      "identifier": "10.5281/zenodo.15611228",
+      "resource_type": "presentation"
+    },
+    {
+      "relation": "isDocumentedBy",
+      "scheme": "doi",
+      "identifier": "10.23889/ijpds.v10i4.3187",
+      "resource_type": "publication-article"
+    }
+  ],
+  "keywords": [
+    "ONS Longitudinal Study",
+    "synthetic data",
+    "R",
+    "Shiny",
+    "CeLSIUS"
+  ]
+}

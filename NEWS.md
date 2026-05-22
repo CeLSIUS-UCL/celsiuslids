@@ -1,3 +1,7 @@
+# celsiuslids 1.1.1
+
+* Added citation metadata (`CITATION.cff`, `.zenodo.json`) so the software can be archived and cited via a DOI. No functional changes.
+
 # celsiuslids 1.1.0
 
 * **Multi-entry tables.** Tables that can legitimately hold more than one record
