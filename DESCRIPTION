@@ -20,7 +20,8 @@ Authors@R: c(
     person("Adam", "Dennett", role = "aut",
            comment = c(ORCID = "0000-0001-8036-0185")),
     person("Economic and Social Research Council", role = "fnd",
-           comment = c(ROR = "03n0ht308", grant = "ES/Z502741/1")))
+           comment = c(ROR = "03n0ht308", grant = "ES/Z502741/1")),
+    person("University College London", role = "cph"))
 Description: An R package containing a Shiny application that can be used to generate impossible datasets resembling data extracts from the ONS Longitudinal Study.
 License: MIT + file LICENSE
 Encoding: UTF-8
