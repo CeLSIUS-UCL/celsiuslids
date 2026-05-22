@@ -1,5 +1,7 @@
 # celsiuslids 
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20344702.svg)](https://doi.org/10.5281/zenodo.20344702)
+
 This R package can be used to run the CeLSIUS Longitudinal Impossible Dataset (LIDS) application locally. The application can be used to generate impossible datasets resembling data extracts from the ONS Longitudinal Study (ONS LS).
 
 ## Installation
@@ -131,6 +133,10 @@ The full list of multi-entry tables is: `NM71`, `NM81`, `NM91`, `NM01`, `NM11`, 
 The application provides feedback through:
 - **Toast notifications**: Brief messages for actions (success, warnings, errors)
 - **Bell icon**: Click to see a history of recent notifications with timestamps
+
+## Citing
+
+If you use LIDS, please cite it via its DOI: https://doi.org/10.5281/zenodo.20344702 (this concept DOI always resolves to the latest version; cite a specific version's DOI for reproducibility). GitHub's "Cite this repository" button generates a full citation from `CITATION.cff`.
 
 ## Contact
 

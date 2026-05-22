@@ -2,6 +2,10 @@ cff-version: 1.2.0
 title: "celsiuslids: CeLSIUS Longitudinal Impossible Dataset (LIDS) Generator"
 message: "If you use this software, please cite it using these metadata."
 type: software
+identifiers:
+  - type: doi
+    value: "10.5281/zenodo.20344702"
+    description: "Concept DOI — resolves to the latest version"
 authors:
   - given-names: Andreas
     family-names: Mastrosavvas
