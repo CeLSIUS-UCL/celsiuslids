@@ -21,12 +21,10 @@ The celsiuslids package requires the following R packages:
 
 - shiny, shinydashboard, shinyWidgets
 - DT
-- dplyr, tidyr, purrr (tidyverse)
+- dplyr, tidyr, purrr, tibble (tidyverse)
 - haven (for Stata/SPSS export)
 - zip
-- jsonlite
 - DBI, RSQLite
-- digest
 
 These will be installed automatically when you install the package.
 

@@ -38,7 +38,5 @@ Imports:
     haven,
     zip,
     shinyWidgets,
-    jsonlite,
     DBI,
-    RSQLite,
-    digest
+    RSQLite
