@@ -1,3 +1,9 @@
+# celsiuslids 1.1.2
+
+* Maintenance release; no functional changes. Regenerated the package
+  documentation, removed unused dependencies (`digest`, `jsonlite`),
+  tidied the licence file, and completed the citation and archive metadata.
+
 # celsiuslids 1.1.1
 
 * Added citation metadata (`CITATION.cff`, `.zenodo.json`) so the software can be archived and cited via a DOI. No functional changes.

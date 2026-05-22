@@ -1,6 +1,6 @@
 Package: celsiuslids
 Title: CeLSIUS Longitudinal Impossible Dataset (LIDS) Generator
-Version: 1.1.1
+Version: 1.1.2
 Authors@R: c(
     person("Andreas", "Mastrosavvas", email = "celsius@ucl.ac.uk", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-1354-5523")),
